@@ -601,44 +601,66 @@ class MethodProfile:
 
 
 def plot_architecture(path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(10, 4))
     ax.axis("off")
+
+    # Box definitions: (x, y, w, h, label)
     boxes = [
-        (0.05, 0.55, 0.2, 0.25, "Market / Simulation\nData"),
-        (0.35, 0.65, 0.22, 0.25, "PDE Model\n(Black--Scholes / HJB)"),
-        (0.6, 0.65, 0.22, 0.25, "Neural Approximation\n$u_\\theta(S,t)$"),
-        (0.6, 0.15, 0.22, 0.25, "Physics-Informed\nResidual $\\mathcal{L}$"),
-        (0.85, 0.4, 0.12, 0.32, "RL Policy\nOptimal Exercise"),
+        (0.05, 0.62, 0.28, 0.24, "Training Labels\n(Analytical / Binomial / MC)"),
+        (0.40, 0.62, 0.22, 0.24, "Neural Surrogate\n$u_\\theta(S,t)$"),
+        (0.68, 0.62, 0.24, 0.24, "Damped Gaussian\nBlending"),
+        (0.90, 0.66, 0.08, 0.18, "Hybrid\nPrice"),
+        (0.12, 0.18, 0.22, 0.24, "PDE Solver\n(Crank--Nicolson)"),
+        (0.44, 0.18, 0.22, 0.24, "PDE Anchors\n(auxiliary MSE)"),
     ]
-    for x, y, w, h, label in boxes:
-        rect = plt.Rectangle(
-            (x, y),
-            w,
-            h,
-            linewidth=2,
-            edgecolor="#1f77b4",
-            facecolor="#dae8fc",
-            zorder=2,
-        )
+
+    def draw_box(x: float, y: float, w: float, h: float, label: str) -> None:
+        rect = plt.Rectangle((x, y), w, h, linewidth=2, edgecolor="#1f77b4", facecolor="#dae8fc", zorder=2)
         ax.add_patch(rect)
-        ax.text(x + w / 2, y + h / 2, label, ha="center", va="center")
-    arrows = [
-        ((0.25, 0.675), (0.35, 0.775)),
-        ((0.57, 0.775), (0.6, 0.775)),
-        ((0.71, 0.65), (0.71, 0.4)),
-        ((0.71, 0.4), (0.71, 0.65)),
-        ((0.82, 0.65), (0.85, 0.56)),
-        ((0.25, 0.65), (0.6, 0.75)),
-        ((0.25, 0.55), (0.65, 0.3)),
+        ax.text(x + w / 2.0, y + h / 2.0, label, ha="center", va="center")
+
+    for x, y, w, h, label in boxes:
+        draw_box(x, y, w, h, label)
+
+    # Helper points (centers of box edges)
+    def mid_right(x, y, w, h):
+        return (x + w, y + h / 2)
+
+    def mid_left(x, y, w, h):
+        return (x, y + h / 2)
+
+    def mid_top(x, y, w, h):
+        return (x + w / 2, y + h)
+
+    def mid_bottom(x, y, w, h):
+        return (x + w / 2, y)
+
+    # Unpack boxes for readability
+    b_labels, b_nn, b_blend, b_out, b_pde, b_anchor = boxes
+
+    # Straight arrows (left-to-right, minimal overlap)
+    arrows_lr = [
+        (mid_right(*b_labels[:4]), mid_left(*b_nn[:4])),      # Labels -> NN
+        (mid_right(*b_nn[:4]),    mid_left(*b_blend[:4])),    # NN -> Blend
+        (mid_right(*b_blend[:4]), mid_left(*b_out[:4])),      # Blend -> Output
+        (mid_right(*b_pde[:4]),   mid_left(*b_anchor[:4])),   # PDE -> Anchors
+        (mid_top(*b_anchor[:4]),  mid_bottom(*b_nn[:4])),     # Anchors -> NN (up)
     ]
-    for (x0, y0), (x1, y1) in arrows:
-        ax.annotate(
-            "",
-            xy=(x1, y1),
-            xytext=(x0, y0),
-            arrowprops=dict(arrowstyle="->", lw=2, color="#555"),
-        )
+    for (x0, y0), (x1, y1) in arrows_lr:
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0), arrowprops=dict(arrowstyle="->", lw=2, color="#555"))
+
+    # Curved arrow from PDE Solver to Blending to indicate direct PDE path used in blend
+    x0, y0 = mid_top(*b_pde[:4])
+    x1, y1 = mid_bottom(*b_blend[:4])
+    ax.annotate(
+        "",
+        xy=(x1, y1),
+        xytext=(x0, y0),
+        arrowprops=dict(arrowstyle="->", lw=2, color="#555", connectionstyle="arc3,rad=0.25"),
+    )
+
     ax.set_title("Hybrid ML--PDE workflow")
+    fig.tight_layout()
     fig.savefig(path, dpi=300)
     plt.close(fig)
 
