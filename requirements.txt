@@ -1,0 +1,6 @@
+# Python dependencies for Hybrid ML-PDE Option Pricing
+# Author: Prof. Edson Pindza et al.
+# Python >= 3.8
+
+numpy>=1.20.0
+matplotlib>=3.3.0

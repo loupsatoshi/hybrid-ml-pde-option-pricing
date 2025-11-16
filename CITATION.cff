@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Hybrid Machine Learning and Partial Differential Equation Framework for Modern Option Pricing"
+authors:
+  - family-names: "Pindza"
+    given-names: "Edson"
+    email: "edsonpindza@gmail.com"
+    affiliation: "University of South Africa (UNISA)"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # Update with actual ORCID if available
+  - family-names: "Owolabi"
+    given-names: "Kolade M."
+    email: "kmowolabi@futa.edu.ng"
+    affiliation: "Federal University of Technology Akure & Sefako Makgatho Health Sciences University"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # Update with actual ORCID if available
+  - family-names: "Mare"
+    given-names: "Eben"
+    email: "eben.mare@up.ac.za"
+    affiliation: "University of Pretoria"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # Update with actual ORCID if available
+type: software
+repository-code: "https://github.com/loupsatoshi/hybrid-ml-pde-option-pricing"
+keywords:
+  - option pricing
+  - machine learning
+  - partial differential equations
+  - computational finance
+  - neural networks
+  - Crank-Nicolson
+  - hybrid methods
+  - American options
+  - exotic options
+  - derivatives pricing
+license: MIT
+year: 2025
+version: 1.0.0
+date-released: "2025-01-16"
+abstract: >
+  A novel hybrid approach combining supervised machine learning with 
+  partial differential equation (PDE) solvers for robust option pricing. 
+  The framework uses neural networks trained with PDE anchoring and 
+  damped Gaussian blending to price European, American, barrier, Asian, 
+  and basket options. Pure NumPy implementation with CPU-only execution.

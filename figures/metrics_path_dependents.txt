@@ -1,0 +1,11 @@
+Path-dependent metrics (relative to MC/PDE references)
+-----------------------------------------------------
+Asian (surrogate vs MC)
+  relative L2: 3.706e-02
+  MAE:         3.607e-01
+  Max error:   2.914e+00
+
+Barrier (surrogate vs PDE grid)
+  relative L2: 3.996e-01
+  MAE:         6.091e-01
+  Max error:   2.412e+01
