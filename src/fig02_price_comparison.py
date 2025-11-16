@@ -26,8 +26,9 @@ from reproduce_figures import (
 
 
 def main() -> None:
-    out_dir = Path("generated_figures")
-    out_dir.mkdir(exist_ok=True)
+    script_dir = Path(__file__).resolve().parent
+    out_dir = script_dir.parent / "figures"
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     rng = np.random.default_rng(7)
     strike = 100.0
